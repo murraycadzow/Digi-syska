@@ -1,0 +1,138 @@
+---
+title: "Google scholar"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Vignette for the {scholar} package: https://cran.r-project.org/web/packages/scholar/vignettes/scholar.html
+
+
+```{r}
+# install.packages("scholar")
+library(scholar)
+library(tidyverse)
+```
+
+Find Google Scholar ID
+
+
+
+The example in the vignette was for Richard Feynman, but we need to get a google scholar ID to use the package. I did this by searching "Richard Feynman" in scholar.google.com and clicked through on the author profile. I then copied the url.
+
+
+https://scholar.google.co.nz/citations?hl=en&user=B7vSqZsAAAAJ
+
+Based on the API lesson we can look at the URL for the profile and the bit after 'user=' should be the ID; B7vSqZsAAAAJ
+
+```{r}
+## Define the id for Richard Feynman
+id <- 'B7vSqZsAAAAJ'
+
+
+## Get his profile
+scholar_profile <- get_profile(id)
+
+# what is contained in a profile?
+str(scholar_profile)
+
+## Print his name and affliation
+scholar_profile$name
+```
+
+So this is telling us some information about the author that google scholar has.
+
+
+We can also get information about his publications
+
+```{r}
+pubs <- get_publications(id)
+
+# look at the information for the first 3
+head(pubs, 3)
+```
+
+We can retrieve information about his citation history
+
+```{r}
+## Get his citation history, i.e. citations to his work in a given year
+ct <- get_citation_history(id)
+```
+
+What does the data we get back look like?
+
+```{r}
+head(ct)
+```
+
+We can visualise this information by plotting the number of cites (y) by year (x) to see if there is a trend.
+
+```{r}
+## Plot citation trend
+ggplot(ct, aes(x = year, y = cites)) + geom_line() + geom_point()
+```
+
+
+Users can retrieve the citation history of a particular publication with get_article_cite_history().
+
+We'll use the first publication in the list from get_publications() earlier.
+```{r}
+head(pubs, 1)
+```
+
+We can get the citation history for this particular article with get_article_cite_history(). We need to provide it the author id, and the publication id foe our article of choice
+```{r}
+## Get article citation history
+article_cites <- get_article_cite_history(id, pubs$pubid[1])
+```
+
+What is the information we get back?
+
+```{r}
+head(article_cites)
+```
+
+
+We can plot this information to see how citiations changed over time for this particular article
+
+```{r}
+## Plot citation trend
+ggplot(article_cites, aes(x = year, y = cites)) +
+    geom_segment(aes(xend = year, yend = 0), size=1, color='darkgrey') +
+    geom_point(size=3, color='firebrick')
+
+```
+
+We can also compare authors
+
+```{r}
+# Compare Feynman and Stephen Hawking
+ids <- c('B7vSqZsAAAAJ', 'qj74uXkAAAAJ')
+
+# Get a data frame comparing the number of citations to their work in
+# a given year
+cs <- compare_scholars(ids)
+
+## remove some 'bad' records without sufficient information
+cs <- filter(cs, !is.na(year) & year > 1900)
+ggplot(cs, aes(year, cites, group=name, color=name)) + geom_line() + theme(legend.position="bottom")
+```
+
+We can also visualise co-author networks
+
+```{r}
+coauthor_network <- get_coauthors('amYIKXQAAAAJ&hl', n_coauthors = 7)
+
+coauthor_network
+```
+
+Plot the network
+```{r}
+plot_coauthors(coauthor_network)
+```
+
+
+A slightly different version of the plot is used in this example https://andreacontina.com/google-scholar/
+
