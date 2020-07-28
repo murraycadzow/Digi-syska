@@ -1,5 +1,5 @@
 # can use a shiny interface to interactively fill in the parameters:
-knit_with_parameters('~/Git_repos/Digi_SYKSA/example.Rmd')
+knit_with_parameters('scholar/example_parameter_template.Rmd')
 
 
 # or prgrammatically create reports by iterating over supplied values
