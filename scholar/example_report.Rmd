@@ -1,7 +1,54 @@
 ---
 title: "Google scholar"
-output: html_document
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
+
+```{r, include = FALSE}
+library(scholar)
+library(tidyverse)
+
+# by default code is hidden on compilation
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## define researcher
+
+```{r}
+## Define the id for Richard Feynman
+id <- 'B7vSqZsAAAAJ'
+
+
+## Get his profile
+scholar_profile <- get_profile(id)
+
+# what is contained in a profile?
+str(scholar_profile)
+
+## Print his name and affliation
+scholar_profile$name
+```
+
+
+
+Report for scholar ID _`r id`_ with name of **`r scholar_profile$name`** from **`r scholar_profile$affiliation`**. They have a h-index of `r scholar_profile$h_index`.
+
+
+- id         : chr "B7vSqZsAAAAJ"
+- name       `r scholar_profile$name`
+- affiliation: chr "California Institute of Technology"
+- total_cites: num 92970
+- h_index    : num 60
+- i10_index  : num 94
+- fields     : chr "no verified email"
+- homepage   : chr(0) 
+- coauthors  : chr ""
+
+[scholar profile url](`r paste0("https://scholar.google.co.nz/citations?hl=en&user=",id)`)
+
 
 ## setup code
 
@@ -56,9 +103,9 @@ We can also get information about his publications
 ```{r}
 pubs <- get_publications(id)
 
-# look at the information for the first 3
-head(pubs, 3)
 ```
+
+## Citation History
 
 We can retrieve information about his citation history
 
@@ -69,7 +116,7 @@ ct <- get_citation_history(id)
 
 What does the data we get back look like?
 
-```{r}
+  ```{r}
 head(ct)
 ```
 
@@ -81,12 +128,18 @@ ggplot(ct, aes(x = year, y = cites)) + geom_line() + geom_point()
 ```
 
 
-Users can retrieve the citation history of a particular publication with get_article_cite_history().
+## Most cited works
 
-We'll use the first publication in the list from get_publications() earlier.
+
+Table of most cited works
+
 ```{r}
-head(pubs, 1)
+pubs %>% select(title, journal, cites, year) %>% arrange(desc(cites)) %>% slice(1:15) %>% knitr::kable()
 ```
+
+### History of most cited work
+
+We can plot this information to see how citiations changed over time for this particular article
 
 We can get the citation history for this particular article with get_article_cite_history(). We need to provide it the author id, and the publication id foe our article of choice
 ```{r}
@@ -94,14 +147,6 @@ We can get the citation history for this particular article with get_article_cit
 article_cites <- get_article_cite_history(id, pubs$pubid[1])
 ```
 
-What is the information we get back?
-
-```{r}
-head(article_cites)
-```
-
-
-We can plot this information to see how citiations changed over time for this particular article
 
 ```{r}
 ## Plot citation trend
@@ -111,20 +156,7 @@ ggplot(article_cites, aes(x = year, y = cites)) +
 
 ```
 
-We can also compare authors
-
-```{r}
-# Compare Feynman and Stephen Hawking
-ids <- c('B7vSqZsAAAAJ', 'qj74uXkAAAAJ')
-
-# Get a data frame comparing the number of citations to their work in
-# a given year
-cs <- compare_scholars(ids)
-
-## remove some 'bad' records without sufficient information
-cs <- filter(cs, !is.na(year) & year > 1900)
-ggplot(cs, aes(year, cites, group=name, color=name)) + geom_line() + theme(legend.position="bottom")
-```
+## Network of co-authors
 
 We can also visualise co-author networks
 

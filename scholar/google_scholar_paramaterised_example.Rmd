@@ -1,28 +1,24 @@
 ---
 title: "Google scholar"
 output: html_document
+params: 
+  param_id: ""
 ---
 
-## setup code
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ```
 
 Vignette for the {scholar} package: https://cran.r-project.org/web/packages/scholar/vignettes/scholar.html
 
-Before running the first time, we need to make sure the {scholar} package is installed. This only needs to be done once.
-```{r, eval= FALSE}
-install.packages("scholar")
-```
 
-Every time we open R or RStudio up we need to load the libraries that contain the functions that are additional to the functions that are included by default. I.e. the functions that are particular to this analysis.
+
 ```{r}
 library(scholar)
 library(tidyverse)
 ```
 
-## Find Google Scholar ID
+Find Google Scholar ID
 
 
 
@@ -35,8 +31,13 @@ Based on the API lesson we can look at the URL for the profile and the bit after
 
 ```{r}
 ## Define the id for Richard Feynman
-id <- 'B7vSqZsAAAAJ'
+#id <- 'B7vSqZsAAAAJ'
 
+if(params$param_id != ""){
+  id <- params$param_id
+} else {
+    id <- 'B7vSqZsAAAAJ'
+}
 
 ## Get his profile
 scholar_profile <- get_profile(id)
@@ -50,6 +51,7 @@ scholar_profile$name
 
 So this is telling us some information about the author that google scholar has.
 
+This report is for `r scholar_profile$name`, and is generated on the fly.
 
 We can also get information about his publications
 

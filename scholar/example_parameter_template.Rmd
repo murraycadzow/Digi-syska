@@ -1,0 +1,63 @@
+---
+title: "Researcher Report"
+author: "Murray Cadzow"
+date: "07/08/2019"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+params:
+  id: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(scholar)
+```
+
+## About the researcher
+
+```{r}
+# id <- 'B7vSqZsAAAAJ' # Richard Fynman ID
+#id <- "amYIKXQAAAAJ&hl"
+id <- params$id
+scholar_api_url <- "https://scholar.google.com/citations?hl=en&user="
+scholar_profile <- get_profile(id)
+```
+
+The google scholar profile id is _`r id`_ and their name is **`r scholar_profile$name`** and their institue is: **`r scholar_profile$affiliation`**. Their H index (from google) is `r scholar_profile$h_index`.
+
+### Researcher url
+
+Their google scholar profile is [here](`r paste0(scholar_api_url, id)`) 
+
+
+
+## Citation history
+
+```{r}
+## Get the authors citation history, i.e. citations to his work in a given year
+ct <- get_citation_history(id)
+```
+
+```{r}
+ggplot(data = ct, mapping = aes(x = year, y = cites)) + geom_line() + geom_point()
+```
+
+## Top 10 cited publications
+
+```{r}
+pubs <- get_publications(id)
+```
+
+This is a table of `r scholar_profile$name`'s most cited publications.
+
+```{r}
+pubs %>% select(title, author, journal, cites, year) %>% 
+  arrange(desc(cites)) %>% slice(1:10) %>% mutate(title = str_to_title(title)) %>% 
+  knitr::kable(col.names = c("Title","Author","Journal","Cites","Year"))
+```
+
+

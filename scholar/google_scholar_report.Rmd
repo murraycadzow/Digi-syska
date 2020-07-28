@@ -1,0 +1,72 @@
+---
+title: "Google scholar report"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+date: "`r format(Sys.Date())`"
+---
+
+```{r, include = FALSE}
+library(scholar)
+library(tidyverse)
+
+# by default code is hidden on compilation
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+------
+
+## About the Researcher
+
+```{r}
+## Define the id for scholar profile (example is Richard Feynman)
+id <- 'B7vSqZsAAAAJ'
+
+
+## Get scholar profile
+scholar_profile <- get_profile(id)
+```
+
+
+
+Report for scholar ID _`r id`_ with name of **`r scholar_profile$name`** from **`r scholar_profile$affiliation`**. They have a h-index of `r scholar_profile$h_index`.
+
+
+Here is the link to their [scholar profile url](`r paste0("https://scholar.google.co.nz/citations?hl=en&user=",id)`).
+
+
+
+## Citation History
+
+```{r}
+## Get the authors citation history, i.e. citations to his work in a given year
+ct <- get_citation_history(id)
+```
+
+Below is the citation history of `r scholar_profile$name` showing number of citations by year.
+
+```{r}
+## Plot citation trend
+ggplot(ct, aes(x = year, y = cites)) + geom_line() + geom_point()
+```
+
+------
+
+## Most cited works
+```{r}
+# get authors publication history
+pubs <- get_publications(id)
+
+```
+
+A table of the top 10 most cited works by `r scholar_profile$name`.
+
+```{r}
+# use the publication history and chose particular columns and arrange by citations (descending order) to present in a table
+pubs %>% select(title, journal, cites, year) %>% arrange(desc(cites)) %>% slice(1:10) %>% knitr::kable()
+```
+
+
+
+

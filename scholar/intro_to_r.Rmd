@@ -1,0 +1,123 @@
+---
+title: "Intro to R"
+author: "Murray Cadzow"
+date: "26/06/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is a brief introduction to R for the purposes of demonstrating the {scholar} package.
+
+Learning objectives:
+
+- Learn the key parts of the RStudio interface
+- Define the following terms as they relate to R: object, assign, call, function, arguments, options.
+- Assign values to objects in R.
+- Learn how to name objects
+- Use comments to inform script.
+- Learn how to install and load libraries
+
+
+## Introduction to Rstudio
+
+For the content refer to https://datacarpentry.org/R-ecology-lesson/00-before-we-start.html
+
+Key parts:
+
+- console pane
+- script pane
+- file explorer, help, and plot tabs
+- environment and history tabs
+
+Console is used for interactive analysis. Creating a script is a great way to document what commands were run and can be used to re-run your work.
+
+
+## R syntax
+
+For a more comprehensive lesson refer to https://datacarpentry.org/R-ecology-lesson/01-intro-to-r.html
+
+Using R as a calculator. 
+
+The mathmatical operators are:
+- \- subtraction
+- + addition
+- / division
+- * multiplication
+- \( \) parentheses
+
+example: type the following in the console and hit enter/return
+```
+2 + 7
+```
+
+Using the console is interactive. the '>' at the start of the line indicates R is waiting for a command. After running a command '>' will return and you can enter another command.
+
+The output from the commands in the console is also return to the console, this is handy for one-off calculations but what if we want to use the results from one command as the input for another?
+
+Name these results by **assigning** the results of a command to a **variable**. In R to do this we use the assignment operator "<-", which can be read as "take the output from the command on the right and put it into a thing with the name on the left".
+
+For example:
+```{r}
+temperature_kelvin <- 25 + 273.1 
+```
+
+If we want to access what our variable called "temperature_kelvin" contains we can type it in and R will output the contents of our variable
+
+```{r}
+temperature_kelvin
+```
+
+One important thing to note is that variables in R code look like words, but if we want our data to be words we have to surround it in matching quote marks (single or double quotes don't matter so long as the opening quote matches the closing quote).
+
+For instance if I wanted to store my name in a variable, as before I assign it using "<-" but I have to put quotes around "Murray" to tell R to treat it as a word (also referred to as string of characters) and not R code
+```{r}
+my_name <- "Murray"
+
+```
+
+## Using functions
+
+Functions are pieces of code that either yourself or others have written that do something. A good comparison would be functions in excel. For instance in excel if you wanted to sum a series of numbers. In excel it would take the form in the formula bar `=SUM(1, 4, 6)` to sum the numbers 1, 4, and 6 together. In R, there is also a sum function and to do the equivalent we do:
+
+```{r}
+sum(1,4,6)
+```
+
+If we put something between the ()'s of a function, this is called an **argument**. Arguments are separated by a comma. In this case the arguments for `sum()` are the numbers we want to sum together.
+
+Often functions have names for their arguments. A common argument is _x_ which usually is your data. To find out what arguments a function takes we can either use the `args()` function and the argmuent we give it is the name of the function we want to know about e.g. for `mean()` we would use:
+
+```{r, eval = TRUE}
+args(mean)
+```
+
+The result tells us about the names of the arguments the `mean()` function takes. If we want to know more we can use `help()`, e.g. `help(mean)` will bring up the manual page for the mean function. 
+
+`mean()` takes an argument _x_ which in this case is the numbers we want to find the mean of.
+
+```{r}
+mean(x = c(1,4,6))
+```
+
+In a similar concept for creating variables, for arguments we use the '=' sign to assign the value(s) on the right to the argument name on the left but the value of _x_ in this case only exists for as long as `mean()` is running, if you look in the environment panel you won't see something called _x_.
+
+I have glossed over the `c()` function, it is the "combine" function but because it is an extremely commonly used function in R, to reduce typing it's called "c". The premise of this function is that you can combine multiple numbers or character strings together to create a single entity called a vector. We used it to be able to pass the numbers 1, 4, and 6 to a single argument _x_. Vectors are a key part of using R so if you're interested more information can be found in the Data Carpentry lesson https://datacarpentry.org/R-ecology-lesson/01-intro-to-r.html#vectors_and_data_types
+
+## Adding domain specific methods/functions
+
+R is open source and people can turn their R code into modules called **packages** that can then be shared with others so they can use the extra functionality. Packages can either come from a centralised repository (CRAN) or the code can be downloaded from anywhere and compiled into a package locally.
+
+In R there is the base installation, but then we can install extra features depending on what we want to do.
+
+To install a package from the main central repository called CRAN we use a function called `install.packages()` and in the parentheses we tell it the name of the package (in quotes) to be installed.
+
+For instance a really popular package for data analysis and visualistation is the "tidyverse"
+
+```{r, eval = FALSE}
+install.packages("tidyverse")
+```
+
+There are other domain specific centralised repositories too, such as for biology, which has one called _Bioconductor_.

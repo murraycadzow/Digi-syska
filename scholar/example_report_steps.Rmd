@@ -1,0 +1,69 @@
+---
+title: Steps to produce the example Rmd
+author: Murray Cadzow
+output: html_document
+---
+
+
+Learning objectives:
+
+
+- understand the components of an Rmd document
+- understand the minimum components of the yaml header
+- use markdown to create a formatted document
+- use R code in a code chunk
+- use inline R code
+- create a report using a google scholar profile
+
+## Reproducible documents
+
+Markdown is a language for creating documents using a plain text syntax for formatting. These documents go through a compile/conversion stage that enables them to be rendered into many different formats such as html, pdf, and even word documents.
+
+Rmarkdown is a variant of markdown that lets us mix text with R code to create a document that has both text and the results of the R code woven together into a single document.
+
+## Document setup
+
+Create an Rmarkdown document from a template in RStudio
+
+```
+File -> New File -> R Markdown -> Document -> OK
+```
+
+This creates an example R markdown document. We're now going to take a look at the components that make up this Rmarkdown document.
+
+- YAML header
+- Text with markdown
+- R code chunks
+
+## YAML header
+
+This contains some (meta)information about the document. This is where we can specify the title, author, date of creation, and most importantly the output format we want the compiled document to be outputted as.
+
+## Markdown
+
+formatting
+
+- headers
+- bold
+- italic
+- super/sub script
+
+
+
+simple tables
+
+col1|col2|col3
+---|---|---
+row1 | a | b
+row2 | c | d
+
+lists
+
+- bullet point
+- numbered
+- nested
+
+## Incorporating code
+
+- code chunks
+- inline
